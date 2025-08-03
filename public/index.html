@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VPN Proxy Browser</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding-top: 80px; }
+    input, button { padding: 10px; width: 80%; max-width: 400px; margin: 10px; }
+    button { background: #007BFF; color: white; border: none; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>🔐 Browse Securely</h1>
+  <form onsubmit="openProxy(event)">
+    <input type="text" id="targetUrl" placeholder="https://example.com" required />
+    <button type="submit">Browse</button>
+  </form>
+
+  <script>
+    function openProxy(e) {
+      e.preventDefault();
+      const url = document.getElementById('targetUrl').value;
+      window.open(`/proxy?url=${encodeURIComponent(url)}`, '_blank');
+    }
+  </script>
+</body>
+</html>
