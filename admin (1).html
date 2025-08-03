@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+</head>
+<body>
+  <h2>Data Entry Form</h2>
+  <input type="text" id="name" placeholder="Name"><br>
+  <input type="text" id="mobile" placeholder="Mobile"><br>
+  <button onclick="saveData()">Save</button>
+  <p id="status"></p>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
+      authDomain: "mobilesearchdata.firebaseapp.com",
+      databaseURL: "https://mobilesearchdata-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "mobilesearchdata",
+      storageBucket: "mobilesearchdata.appspot.com",
+      messagingSenderId: "484011687117",
+      appId: "1:484011687117:web:b06b94447c96d158477d84"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function saveData() {
+      const name = document.getElementById('name').value.toLowerCase();
+      const mobile = document.getElementById('mobile').value;
+      if (!name || !mobile) {
+        document.getElementById('status').textContent = "❌ Please fill both fields.";
+        return;
+      }
+
+      const newRef = db.ref('people').push();
+      newRef.set({
+        name: name,
+        mobile: mobile
+      }, (error) => {
+        if (error) {
+          document.getElementById('status').textContent = "❌ Error: " + error;
+        } else {
+          document.getElementById('status').textContent = "✅ Data saved!";
+        }
+      });
+    }
+  </script>
+</body>
+</html>
