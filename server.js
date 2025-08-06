@@ -1,28 +1,41 @@
-const express = require('express');
-const { createProxyMiddleware } = require('http-proxy-middleware');
-const cors = require('cors');
+const express = require("express");
+const path = require("path");
+const cors = require("cors");
+const { createProxyMiddleware } = require("http-proxy-middleware");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use('/proxy', createProxyMiddleware({
-  changeOrigin: true,
-  secure: false,
-  router: req => {
-    const url = req.query.url;
-    return url || 'https://example.com';
-  },
-  onProxyReq: (proxyReq, req) => {
-    const url = req.query.url;
-    if (url) {
-      const u = new URL(url);
-      proxyReq.setHeader('Host', u.host);
-      proxyReq.path = u.pathname + (u.search || '');
-    }
-  },
-  logLevel: 'debug',
-}));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
-app.listen(PORT, () => console.log(`✅ Proxy running on port ${PORT}`));
+app.use(
+  "/proxy",
+  createProxyMiddleware({
+    changeOrigin: true,
+    pathRewrite: {
+      "^/proxy": "",
+    },
+    router: (req) => {
+      const url = new URL(req.url, `http://${req.headers.host}`);
+      return url.searchParams.get("url");
+    },
+    onProxyReq: (proxyReq, req) => {
+      const url = new URL(req.url, `http://${req.headers.host}`);
+      const target = url.searchParams.get("url");
+      if (target) {
+        const targetUrl = new URL(target);
+        proxyReq.setHeader("Host", targetUrl.host);
+      }
+    },
+    logLevel: "debug",
+  })
+);
+
+app.listen(PORT, () => {
+  console.log(`✅ Proxy server running on port ${PORT}`);
+});
