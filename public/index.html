@@ -3,21 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VPN Proxy Browser</title>
+  <title>VPN Proxy + Location Spoof</title>
   <style>
-    body { font-family: sans-serif; text-align: center; padding-top: 80px; }
+    body { font-family: sans-serif; text-align: center; padding-top: 40px; }
     input, button { padding: 10px; width: 80%; max-width: 400px; margin: 10px; }
     button { background: #007BFF; color: white; border: none; border-radius: 6px; }
+    .spoofed { color: green; font-weight: bold; }
   </style>
 </head>
 <body>
-  <h1>🔐 Browse Securely</h1>
+  <h2>🛰️ IP Proxy + Location Spoofer</h2>
+  <p id="status">Your real location is being used.</p>
+  <button onclick="spoofLocation()">🎭 Spoof My Location (USA)</button>
+  <hr>
+  <h3>🔐 Browse Anonymously</h3>
   <form onsubmit="openProxy(event)">
     <input type="text" id="targetUrl" placeholder="https://example.com" required />
-    <button type="submit">Browse</button>
+    <button type="submit">Browse via Proxy</button>
   </form>
 
   <script>
+    let isSpoofed = false;
+    function spoofLocation() {
+      if (!isSpoofed) {
+        const fakeLatitude = 40.7128;
+        const fakeLongitude = -74.0060;
+        navigator.geolocation.getCurrentPosition = function(success) {
+          success({ coords: {
+            latitude: fakeLatitude,
+            longitude: fakeLongitude,
+            accuracy: 100
+          }});
+        };
+        isSpoofed = true;
+        document.getElementById("status").innerHTML = "📍 Location spoofed to <span class='spoofed'>New York, USA</span>";
+      }
+    }
+
     function openProxy(e) {
       e.preventDefault();
       const url = document.getElementById('targetUrl').value;
