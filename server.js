@@ -16,6 +16,7 @@ app.get("/", (req, res) => {
 app.use(
   "/proxy",
   createProxyMiddleware({
+    target: "https://", // ✅ Required to avoid undefined error
     changeOrigin: true,
     pathRewrite: {
       "^/proxy": "",
