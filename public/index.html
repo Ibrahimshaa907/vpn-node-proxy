@@ -3,48 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VPN Proxy + Location Spoof</title>
+  <title>VPN Proxy Browser</title>
   <style>
-    body { font-family: sans-serif; text-align: center; padding-top: 40px; }
-    input, button { padding: 10px; width: 80%; max-width: 400px; margin: 10px; }
-    button { background: #007BFF; color: white; border: none; border-radius: 6px; }
-    .spoofed { color: green; font-weight: bold; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    input {
+      width: 70%;
+      padding: 10px;
+    }
+    button {
+      padding: 10px;
+    }
+    iframe {
+      width: 100%;
+      height: 600px;
+      margin-top: 20px;
+      border: 1px solid #ccc;
+    }
   </style>
 </head>
 <body>
-  <h2>🛰️ IP Proxy + Location Spoofer</h2>
-  <p id="status">Your real location is being used.</p>
-  <button onclick="spoofLocation()">🎭 Spoof My Location (USA)</button>
-  <hr>
-  <h3>🔐 Browse Anonymously</h3>
-  <form onsubmit="openProxy(event)">
+  <h2>🔐 Browse a Blocked Site via VPN Proxy</h2>
+  <form id="proxyForm">
     <input type="text" id="targetUrl" placeholder="https://example.com" required />
-    <button type="submit">Browse via Proxy</button>
+    <button type="submit">Go</button>
   </form>
 
-  <script>
-    let isSpoofed = false;
-    function spoofLocation() {
-      if (!isSpoofed) {
-        const fakeLatitude = 40.7128;
-        const fakeLongitude = -74.0060;
-        navigator.geolocation.getCurrentPosition = function(success) {
-          success({ coords: {
-            latitude: fakeLatitude,
-            longitude: fakeLongitude,
-            accuracy: 100
-          }});
-        };
-        isSpoofed = true;
-        document.getElementById("status").innerHTML = "📍 Location spoofed to <span class='spoofed'>New York, USA</span>";
-      }
-    }
+  <iframe id="resultFrame"></iframe>
 
-    function openProxy(e) {
+  <script>
+    const form = document.getElementById("proxyForm");
+    const frame = document.getElementById("resultFrame");
+
+    form.addEventListener("submit", function (e) {
       e.preventDefault();
-      const url = document.getElementById('targetUrl').value;
-      window.open(`/proxy?url=${encodeURIComponent(url)}`, '_blank');
-    }
+      const url = document.getElementById("targetUrl").value;
+      frame.src = `/proxy?url=${encodeURIComponent(url)}`;
+    });
   </script>
 </body>
 </html>
