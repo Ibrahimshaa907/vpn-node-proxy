@@ -1,63 +1,49 @@
 const express = require("express");
-const cors = require("cors");
 const path = require("path");
+const cors = require("cors");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Example free proxies — update frequently!
-const PROXIES = [
-  "http://103.216.82.19:6667",
-  "http://103.216.82.20:6667",
-  "http://103.216.82.21:6667",
-  "http://103.216.82.22:6667",
-  "http://103.216.82.23:6667"
-];
-
-function getRandomProxy() {
-  const index = Math.floor(Math.random() * PROXIES.length);
-  return PROXIES[index];
-}
+const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 
+// Root route
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.use("/proxy", async (req, res, next) => {
-  const targetUrl = req.query.url;
-
-  if (!targetUrl) {
-    return res.status(400).send("Missing ?url= parameter.");
-  }
-
-  try {
-    const proxy = getRandomProxy();
-
-    console.log(`🌍 Using proxy: ${proxy}`);
-    console.log(`➡️  Forwarding to: ${targetUrl}`);
+// Proxy route
+app.use(
+  "/proxy",
+  async (req, res, next) => {
+    const targetUrl = req.query.url;
+    if (!targetUrl) {
+      return res.status(400).json({
+        status: 400,
+        error: {
+          title: "Missing URL",
+          message: "Please provide a ?url=https://example.com",
+        },
+      });
+    }
 
     createProxyMiddleware({
       target: targetUrl,
       changeOrigin: true,
+      pathRewrite: { "^/proxy": "" },
       secure: false,
-      pathRewrite: () => "",
-      agent: require("http-proxy-agent")(proxy),
-      onError: (err, req, res) => {
-        console.error("Proxy error:", err.message);
-        res.status(500).send("Proxy failed.");
+      headers: {
+        host: new URL(targetUrl).host,
+      },
+      onError(err, req, res) {
+        res.status(500).json({ error: "Proxy error", details: err.message });
       },
     })(req, res, next);
-
-  } catch (err) {
-    console.error("Error:", err);
-    res.status(500).send("Unexpected server error.");
   }
-});
+);
 
 app.listen(PORT, () => {
-  console.log(`✅ VPN proxy server running on port ${PORT}`);
+  console.log(`✅ Proxy server running on port ${PORT}`);
 });
