@@ -3,45 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VPN Proxy Browser</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    input {
-      width: 70%;
-      padding: 10px;
-    }
-    button {
-      padding: 10px;
-    }
-    iframe {
-      width: 100%;
-      height: 600px;
-      margin-top: 20px;
-      border: 1px solid #ccc;
-    }
-  </style>
+  <title>ScraperAPI VPN Proxy</title>
 </head>
 <body>
-  <h2>🔐 Browse a Blocked Site via VPN Proxy</h2>
-  <form id="proxyForm">
-    <input type="text" id="targetUrl" placeholder="https://example.com" required />
-    <button type="submit">Go</button>
-  </form>
-
-  <iframe id="resultFrame"></iframe>
+  <h2>Enter Website URL</h2>
+  <input type="text" id="urlInput" placeholder="e.g., https://httpbin.org/ip" style="width: 300px;" />
+  <button onclick="go()">Browse with new IP</button>
 
   <script>
-    const form = document.getElementById("proxyForm");
-    const frame = document.getElementById("resultFrame");
+    function go() {
+      const url = document.getElementById("urlInput").value.trim();
+      if (!url) return alert("Please enter a URL");
 
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const url = document.getElementById("targetUrl").value;
-      frame.src = `/proxy?url=${encodeURIComponent(url)}`;
-    });
+      const encoded = encodeURIComponent(url);
+      const goUrl = `/go?url=${encoded}`;
+      window.open(goUrl, "_blank"); // Open in new tab
+    }
   </script>
 </body>
 </html>
