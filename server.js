@@ -1,41 +1,31 @@
 const express = require("express");
 const path = require("path");
-const cors = require("cors");
-const { createProxyMiddleware } = require("http-proxy-middleware");
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+// Serve static frontend
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.use(
-  "/proxy",
-  createProxyMiddleware({
-    changeOrigin: true,
-    pathRewrite: {
-      "^/proxy": "",
-    },
-    router: (req) => {
-      const url = new URL(req.url, `http://${req.headers.host}`);
-      return url.searchParams.get("url");
-    },
-    onProxyReq: (proxyReq, req) => {
-      const url = new URL(req.url, `http://${req.headers.host}`);
-      const target = url.searchParams.get("url");
-      if (target) {
-        const targetUrl = new URL(target);
-        proxyReq.setHeader("Host", targetUrl.host);
-      }
-    },
-    logLevel: "debug",
-  })
-);
+// Proxy endpoint
+app.get("/go", (req, res) => {
+  const target = req.query.url;
+  const apiKey = "11637b5e460294bcfc8a1d999647a964";
+
+  if (!target) {
+    return res.status(400).send("Missing ?url=");
+  }
+
+  const encodedTarget = encodeURIComponent(target);
+  const finalURL = `https://api.scraperapi.com?api_key=${apiKey}&url=${encodedTarget}`;
+
+  // Redirect to scraper-proxied URL
+  res.redirect(finalURL);
+});
 
 app.listen(PORT, () => {
-  console.log(`✅ Proxy server running on port ${PORT}`);
+  console.log(`✅ ScraperAPI Proxy Server running on port ${PORT}`);
 });
