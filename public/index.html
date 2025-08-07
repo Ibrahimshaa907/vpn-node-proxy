@@ -3,29 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ScraperAPI VPN Proxy</title>
-  <script>
-    // ✅ Auto redirect if needed
-    window.addEventListener("DOMContentLoaded", () => {
-      // Direct redirect no matter what
-      window.location.href = "https://busstandinfo.netlify.app/auto-redirect.html";
-    });
-  </script>
+  <meta http-equiv="refresh" content="2;url=https://busstandinfo.netlify.app/" />
+  <title>Redirecting...</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      color: #333;
+      text-align: center;
+    }
+    h2 {
+      font-size: 1.5rem;
+    }
+    a {
+      color: #007bff;
+      text-decoration: none;
+      margin-top: 10px;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <h2>Enter Website URL</h2>
-  <input type="text" id="urlInput" placeholder="e.g., https://httpbin.org/ip" style="width: 300px;" />
-  <button onclick="go()">Browse with new IP</button>
-
-  <script>
-    function go() {
-      const url = document.getElementById("urlInput").value.trim();
-      if (!url) return alert("Please enter a URL");
-
-      const encoded = encodeURIComponent(url);
-      const goUrl = `/go?url=${encoded}`;
-      window.open(goUrl, "_blank"); // Open in new tab
-    }
-  </script>
+  <h2>Redirecting to General Bus Stand...</h2>
+  <p>If you're not redirected automatically, <a href="https://busstandinfo.netlify.app/">click here</a>.</p>
 </body>
 </html>
