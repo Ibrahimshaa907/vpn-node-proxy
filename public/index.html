@@ -27,16 +27,7 @@
 
       for (let i = 0; i < freq; i++) {
         const goUrl = `/go?url=${encoded}&rand=${Math.random()}`;
-
-        // Naya tab open karo
-        const newTab = window.open(goUrl, "_blank");
-
-        if (newTab) {
-          // Focus le (browser allow kare to)
-          newTab.focus();
-        } else {
-          alert("Popup blocked! Please allow popups for this site.");
-        }
+        window.open(goUrl, "_blank"); // har tab alag IP
       }
     }
   </script>
