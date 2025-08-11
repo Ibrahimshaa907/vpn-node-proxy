@@ -9,28 +9,24 @@
   <h2>Enter Website URL</h2>
   <input type="text" id="urlInput" placeholder="e.g., https://httpbin.org/ip" style="width: 300px;" />
 
-  <h3>Frequency (times to open)</h3>
-  <input type="number" id="freqInput" min="1" max="10" value="1" style="width: 80px;" />
+  <h3>Enter Frequency</h3>
+  <input type="number" id="freqInput" value="1" min="1" style="width: 100px;" />
 
-  <br><br>
   <button onclick="go()">Browse with new IP</button>
 
   <script>
     function go() {
       const url = document.getElementById("urlInput").value.trim();
-      const freq = parseInt(document.getElementById("freqInput").value, 10) || 1;
+      const freq = parseInt(document.getElementById("freqInput").value.trim());
 
-      if (!url) {
-        alert("Please enter a URL");
-        return;
-      }
+      if (!url) return alert("Please enter a URL");
+      if (!freq || freq < 1) return alert("Please enter a valid frequency");
 
       const encoded = encodeURIComponent(url);
+
       for (let i = 0; i < freq; i++) {
-        const goUrl = `/go?url=${encoded}&t=${Date.now()}_${i}`;
-        setTimeout(() => {
-          window.open(goUrl, "_blank");
-        }, i * 500); // Delay to avoid popup blocking
+        const goUrl = `/go?url=${encoded}&_=${Date.now()}_${i}`;
+        window.open(goUrl, "_blank");
       }
     }
   </script>
