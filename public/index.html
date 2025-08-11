@@ -14,11 +14,16 @@
   
   <br><br>
   <button onclick="go()">Browse with new IP(s)</button>
+  
+  <div id="framesContainer" style="margin-top:20px;"></div>
 
   <script>
     function go() {
       const url = document.getElementById("urlInput").value.trim();
       const freq = parseInt(document.getElementById("freqInput").value, 10);
+      const container = document.getElementById("framesContainer");
+
+      container.innerHTML = ""; // Purane frames clear karo
 
       if (!url) return alert("Please enter a URL");
       if (!freq || freq < 1) return alert("Please enter a valid frequency");
@@ -27,7 +32,13 @@
 
       for (let i = 0; i < freq; i++) {
         const goUrl = `/go?url=${encoded}&rand=${Math.random()}`;
-        window.open(goUrl, "_blank"); // har tab alag IP
+        const iframe = document.createElement("iframe");
+        iframe.src = goUrl;
+        iframe.width = "100%";
+        iframe.height = "400";
+        iframe.style.border = "1px solid #ccc";
+        iframe.style.marginBottom = "10px";
+        container.appendChild(iframe);
       }
     }
   </script>
