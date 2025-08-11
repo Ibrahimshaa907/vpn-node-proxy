@@ -34,11 +34,6 @@
         if (newTab) {
           // Focus le (browser allow kare to)
           newTab.focus();
-
-          // 3 second baad close karo
-          setTimeout(() => {
-            newTab.close();
-          }, 3000);
         } else {
           alert("Popup blocked! Please allow popups for this site.");
         }
