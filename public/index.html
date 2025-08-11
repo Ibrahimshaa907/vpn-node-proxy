@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sequential Tab Opener</title>
+  <title>Sequential Tab Opener via Proxy</title>
 </head>
 <body>
   <h2>Enter Website URL</h2>
-  <input type="text" id="urlInput" placeholder="e.g., https://busstandinfo.netlify.app/" style="width: 300px;" />
+  <input type="text" id="urlInput" placeholder="https://busstandinfo.netlify.app/" style="width: 300px;" />
 
   <h3>Enter Frequency</h3>
   <input type="number" id="freqInput" min="1" max="20" value="1" style="width: 80px;" />
@@ -29,15 +29,19 @@
         return;
       }
 
-      for (let i = 0; i < freq; i++) {
-        const newTab = window.open(url, "_blank");
+      // Apne backend ka address yahan daalo (local ya deployed)
+      const proxyBase = window.location.origin + '/go?url=';
 
+      for (let i = 0; i < freq; i++) {
+        const openUrl = proxyBase + encodeURIComponent(url);
+
+        const newTab = window.open(openUrl, "_blank");
         if (!newTab) {
-          alert("Popup blocked! Please allow popups for this site.");
+          alert("Popup blocked! Please allow popups.");
           return;
         }
 
-        await new Promise((resolve) => {
+        await new Promise(resolve => {
           let maxWaited = false;
 
           const maxTimeout = setTimeout(() => {
@@ -55,7 +59,6 @@
                 resolve();
               }
             } catch (e) {
-              // Cross-origin - fallback wait 2 sec only if maxWaited not true
               clearTimeout(maxTimeout);
               clearInterval(checkLoaded);
               setTimeout(resolve, 2000);
@@ -64,13 +67,13 @@
         });
 
         newTab.focus();
-        await new Promise((r) => setTimeout(r, 5000));
+        await new Promise(r => setTimeout(r, 5000));
 
         if (newTab && !newTab.closed) {
           newTab.close();
         }
 
-        await new Promise((r) => setTimeout(r, 3000));
+        await new Promise(r => setTimeout(r, 3000));
       }
     }
   </script>
