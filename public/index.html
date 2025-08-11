@@ -3,41 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ScraperAPI VPN Proxy</title>
+  <title>Iframe Bypass Proxy</title>
 </head>
 <body>
   <h2>Enter Website URL</h2>
-  <input type="text" id="urlInput" placeholder="e.g., https://httpbin.org/ip" style="width: 300px;" />
-  
+  <input type="text" id="urlInput" placeholder="https://example.com" style="width: 300px;" />
+
   <h3>Enter Frequency</h3>
   <input type="number" id="freqInput" min="1" max="20" value="1" style="width: 80px;" />
-  
+
   <br><br>
-  <button onclick="go()">Browse with new IP(s)</button>
-  
-  <div id="framesContainer" style="margin-top:20px;"></div>
+  <button onclick="go()">Open in Frames (Bypass)</button>
+
+  <div id="framesContainer" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:20px;"></div>
 
   <script>
     function go() {
       const url = document.getElementById("urlInput").value.trim();
       const freq = parseInt(document.getElementById("freqInput").value, 10);
-      const container = document.getElementById("framesContainer");
-
-      container.innerHTML = ""; // Purane frames clear karo
 
       if (!url) return alert("Please enter a URL");
       if (!freq || freq < 1) return alert("Please enter a valid frequency");
 
+      const container = document.getElementById("framesContainer");
+      container.innerHTML = ""; // clear old frames
+
       const encoded = encodeURIComponent(url);
 
       for (let i = 0; i < freq; i++) {
-        const goUrl = `/go?url=${encoded}&rand=${Math.random()}`;
         const iframe = document.createElement("iframe");
-        iframe.src = goUrl;
-        iframe.width = "100%";
-        iframe.height = "400";
-        iframe.style.border = "1px solid #ccc";
-        iframe.style.marginBottom = "10px";
+        iframe.src = `/go?url=${encoded}&rand=${Math.random()}`;
+        iframe.style.width = "400px";
+        iframe.style.height = "300px";
         container.appendChild(iframe);
       }
     }
