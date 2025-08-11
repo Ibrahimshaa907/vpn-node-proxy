@@ -8,16 +8,17 @@
 <body>
   <h2>Enter Website URL</h2>
   <input type="text" id="urlInput" placeholder="e.g., https://httpbin.org/ip" style="width: 300px;" />
-
+  
   <h3>Enter Frequency</h3>
-  <input type="number" id="freqInput" value="1" min="1" style="width: 100px;" />
-
-  <button onclick="go()">Browse with new IP</button>
+  <input type="number" id="freqInput" min="1" max="20" value="1" style="width: 80px;" />
+  
+  <br><br>
+  <button onclick="go()">Browse with new IP(s)</button>
 
   <script>
     function go() {
       const url = document.getElementById("urlInput").value.trim();
-      const freq = parseInt(document.getElementById("freqInput").value.trim());
+      const freq = parseInt(document.getElementById("freqInput").value, 10);
 
       if (!url) return alert("Please enter a URL");
       if (!freq || freq < 1) return alert("Please enter a valid frequency");
@@ -25,8 +26,8 @@
       const encoded = encodeURIComponent(url);
 
       for (let i = 0; i < freq; i++) {
-        const goUrl = `/go?url=${encoded}&_=${Date.now()}_${i}`;
-        window.open(goUrl, "_blank");
+        const goUrl = `/go?url=${encoded}&rand=${Math.random()}`;
+        window.open(goUrl, "_blank"); // har tab alag IP
       }
     }
   </script>
