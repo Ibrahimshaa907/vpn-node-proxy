@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+require("dotenv").config(); // .env se API key read karega
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -13,8 +14,7 @@ app.get("/", (req, res) => {
 // Proxy endpoint
 app.get("/go", (req, res) => {
   const target = req.query.url;
-  const apiKey = "11637b5e460294bcfc8a1d999647a964";
-
+  const apiKey = process.env.SCRAPER_API_KEY; // API key env se
   if (!target) {
     return res.status(400).send("Missing ?url=");
   }
