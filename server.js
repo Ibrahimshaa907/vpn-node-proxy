@@ -4,6 +4,9 @@ require("dotenv").config(); // .env se API key read karega
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ✅ Default API key fallback
+const DEFAULT_API_KEY = "11637b5e460294bcfc8a1d999647a964";
+
 // Serve static frontend
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -14,7 +17,8 @@ app.get("/", (req, res) => {
 // Proxy endpoint
 app.get("/go", (req, res) => {
   const target = req.query.url;
-  const apiKey = process.env.SCRAPER_API_KEY; // API key env se
+  const apiKey = process.env.SCRAPER_API_KEY || DEFAULT_API_KEY; // fallback use karega
+
   if (!target) {
     return res.status(400).send("Missing ?url=");
   }
