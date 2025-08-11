@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ScraperAPI Sequential Tabs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sequential Tab Opener</title>
 </head>
 <body>
   <h2>Enter Website URL</h2>
-  <input type="text" id="urlInput" placeholder="e.g., https://httpbin.org/ip" style="width: 300px;" />
-  
+  <input type="text" id="urlInput" placeholder="e.g., https://busstandinfo.netlify.app/" style="width: 300px;" />
+
   <h3>Enter Frequency</h3>
   <input type="number" id="freqInput" min="1" max="20" value="1" style="width: 80px;" />
-  
+
   <br><br>
   <button onclick="go()">Start Browsing</button>
 
@@ -20,23 +20,26 @@
       const url = document.getElementById("urlInput").value.trim();
       const freq = parseInt(document.getElementById("freqInput").value, 10);
 
-      if (!url) return alert("Please enter a URL");
-      if (!freq || freq < 1) return alert("Please enter a valid frequency");
-
-      const encoded = encodeURIComponent(url);
+      if (!url) {
+        alert("Please enter a URL");
+        return;
+      }
+      if (!freq || freq < 1) {
+        alert("Please enter a valid frequency");
+        return;
+      }
 
       for (let i = 0; i < freq; i++) {
-        const goUrl = `/go?url=${encoded}&rand=${Math.random()}`;
-        const newTab = window.open(goUrl, "_blank");
+        const newTab = window.open(url, "_blank");
 
         if (!newTab) {
           alert("Popup blocked! Please allow popups for this site.");
           return;
         }
 
-        // Smart wait logic for tab load:
-        await new Promise(resolve => {
+        await new Promise((resolve) => {
           let maxWaited = false;
+
           const maxTimeout = setTimeout(() => {
             maxWaited = true;
             clearInterval(checkLoaded);
@@ -60,17 +63,14 @@
           }, 200);
         });
 
-        // Keep focus for 5 seconds
         newTab.focus();
-        await new Promise(r => setTimeout(r, 5000));
+        await new Promise((r) => setTimeout(r, 5000));
 
-        // Close tab
         if (newTab && !newTab.closed) {
           newTab.close();
         }
 
-        // Wait 3 seconds before next tab
-        await new Promise(r => setTimeout(r, 3000));
+        await new Promise((r) => setTimeout(r, 3000));
       }
     }
   </script>
