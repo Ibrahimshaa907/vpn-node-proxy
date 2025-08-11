@@ -29,13 +29,14 @@
         return;
       }
 
-      // Apne backend ka address yahan daalo (local ya deployed)
       const proxyBase = window.location.origin + '/go?url=';
 
       for (let i = 0; i < freq; i++) {
         const openUrl = proxyBase + encodeURIComponent(url);
 
+        console.log(`Opening tab ${i + 1}: ${openUrl}`);
         const newTab = window.open(openUrl, "_blank");
+
         if (!newTab) {
           alert("Popup blocked! Please allow popups.");
           return;
@@ -47,8 +48,9 @@
           const maxTimeout = setTimeout(() => {
             maxWaited = true;
             clearInterval(checkLoaded);
+            console.log("Max load wait time exceeded, proceeding...");
             resolve();
-          }, 10000); // max 10 sec wait
+          }, 20000); // 20 sec max wait
 
           const checkLoaded = setInterval(() => {
             if (maxWaited) return;
@@ -56,25 +58,35 @@
               if (newTab.document && newTab.document.readyState === "complete") {
                 clearTimeout(maxTimeout);
                 clearInterval(checkLoaded);
+                console.log("Page loaded");
                 resolve();
               }
             } catch (e) {
               clearTimeout(maxTimeout);
               clearInterval(checkLoaded);
-              setTimeout(resolve, 2000);
+              console.log("Cross-origin fallback wait");
+              setTimeout(() => {
+                console.log("Fallback wait done");
+                resolve();
+              }, 5000); // 5 sec fallback wait
             }
           }, 200);
         });
 
+        console.log("Focusing tab for 8 seconds");
         newTab.focus();
-        await new Promise(r => setTimeout(r, 5000));
+        await new Promise(r => setTimeout(r, 8000));
 
         if (newTab && !newTab.closed) {
+          console.log("Closing tab");
           newTab.close();
         }
 
+        console.log("Waiting 3 seconds before next tab");
         await new Promise(r => setTimeout(r, 3000));
       }
+
+      console.log("All tabs processed");
     }
   </script>
 </body>
