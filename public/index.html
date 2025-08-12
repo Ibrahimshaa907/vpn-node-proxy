@@ -2,62 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sequential Tab Opener via ScraperAPI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ScraperAPI VPN Proxy</title>
 </head>
 <body>
   <h2>Enter Website URL</h2>
-  <input type="text" id="urlInput" placeholder="https://example.com/" style="width: 300px;" />
-
+  <input type="text" id="urlInput" placeholder="e.g., https://httpbin.org/ip" style="width: 300px;" />
+  
   <h3>Enter Frequency</h3>
   <input type="number" id="freqInput" min="1" max="20" value="1" style="width: 80px;" />
-
+  
   <br><br>
-  <button onclick="go()">Start Browsing</button>
+  <button onclick="go()">Browse with new IP(s)</button>
 
   <script>
-    async function go() {
+    function go() {
       const url = document.getElementById("urlInput").value.trim();
       const freq = parseInt(document.getElementById("freqInput").value, 10);
 
-      if (!url) {
-        alert("Please enter a URL");
-        return;
-      }
-      if (!freq || freq < 1) {
-        alert("Please enter a valid frequency");
-        return;
-      }
+      if (!url) return alert("Please enter a URL");
+      if (!freq || freq < 1) return alert("Please enter a valid frequency");
 
-      // /go route will handle ScraperAPI
-      const proxyBase = window.location.origin + '/go?url=';
+      const encoded = encodeURIComponent(url);
 
       for (let i = 0; i < freq; i++) {
-        const openUrl = proxyBase + encodeURIComponent(url);
-        console.log(`Opening tab ${i + 1}: ${openUrl}`);
-
-        const newTab = window.open(openUrl, "_blank");
-
-        if (!newTab) {
-          alert("Popup blocked! Please allow popups.");
-          return;
-        }
-
-        // Focus tab and wait 40 sec
-        newTab.focus();
-        await new Promise(r => setTimeout(r, 40000));
-
-        // Close tab
-        if (newTab && !newTab.closed) {
-          console.log("Closing tab");
-          newTab.close();
-        }
-
-        // Wait 3 sec before opening next
-        await new Promise(r => setTimeout(r, 3000));
+        const goUrl = `/go?url=${encoded}&rand=${Math.random()}`;
+        window.open(goUrl, "_blank"); // har tab alag IP
       }
-
-      console.log("✅ All tabs processed");
     }
   </script>
 </body>
