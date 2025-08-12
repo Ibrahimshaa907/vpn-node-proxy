@@ -3,7 +3,7 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve static frontend
+// Static frontend serve karo
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
@@ -22,7 +22,7 @@ app.get("/go", (req, res) => {
   const encodedTarget = encodeURIComponent(target);
   const finalURL = `https://api.scraperapi.com?api_key=${apiKey}&url=${encodedTarget}`;
 
-  // Redirect to scraper-proxied URL
+  // Direct ScraperAPI URL pe redirect
   res.redirect(finalURL);
 });
 
