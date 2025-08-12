@@ -17,7 +17,16 @@
 
       const encoded = encodeURIComponent(url);
       const goUrl = `/go?url=${encoded}`;
-      window.open(goUrl, "_blank"); // Open in new tab
+      const newWindow = window.open(goUrl, "_blank"); // New tab open karo
+      
+      // 40 seconds baad window close karo
+      if (newWindow) {
+        setTimeout(() => {
+          newWindow.close();
+        }, 40000); // 40 seconds
+      } else {
+        alert("New tab nahi khul saka. Popup blocker disable karo.");
+      }
     }
   </script>
 </body>
