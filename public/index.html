@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sequential Tab Opener via Proxy</title>
+  <title>Sequential Tab Opener via ScraperAPI</title>
 </head>
 <body>
   <h2>Enter Website URL</h2>
-  <input type="text" id="urlInput" placeholder="https://busstandinfo.netlify.app/" style="width: 300px;" />
+  <input type="text" id="urlInput" placeholder="https://example.com/" style="width: 300px;" />
 
   <h3>Enter Frequency</h3>
   <input type="number" id="freqInput" min="1" max="20" value="1" style="width: 80px;" />
@@ -29,12 +29,13 @@
         return;
       }
 
+      // /go route will handle ScraperAPI
       const proxyBase = window.location.origin + '/go?url=';
 
       for (let i = 0; i < freq; i++) {
         const openUrl = proxyBase + encodeURIComponent(url);
-
         console.log(`Opening tab ${i + 1}: ${openUrl}`);
+
         const newTab = window.open(openUrl, "_blank");
 
         if (!newTab) {
@@ -42,51 +43,21 @@
           return;
         }
 
-        await new Promise(resolve => {
-          let maxWaited = false;
-
-          const maxTimeout = setTimeout(() => {
-            maxWaited = true;
-            clearInterval(checkLoaded);
-            console.log("Max load wait time exceeded, proceeding...");
-            resolve();
-          }, 20000); // 20 sec max wait
-
-          const checkLoaded = setInterval(() => {
-            if (maxWaited) return;
-            try {
-              if (newTab.document && newTab.document.readyState === "complete") {
-                clearTimeout(maxTimeout);
-                clearInterval(checkLoaded);
-                console.log("Page loaded");
-                resolve();
-              }
-            } catch (e) {
-              clearTimeout(maxTimeout);
-              clearInterval(checkLoaded);
-              console.log("Cross-origin fallback wait");
-              setTimeout(() => {
-                console.log("Fallback wait done");
-                resolve();
-              }, 5000); // 5 sec fallback wait
-            }
-          }, 200);
-        });
-
-        console.log("Focusing tab for 8 seconds");
+        // Focus tab and wait 40 sec
         newTab.focus();
-        await new Promise(r => setTimeout(r, 8000));
+        await new Promise(r => setTimeout(r, 40000));
 
+        // Close tab
         if (newTab && !newTab.closed) {
           console.log("Closing tab");
           newTab.close();
         }
 
-        console.log("Waiting 3 seconds before next tab");
+        // Wait 3 sec before opening next
         await new Promise(r => setTimeout(r, 3000));
       }
 
-      console.log("All tabs processed");
+      console.log("✅ All tabs processed");
     }
   </script>
 </body>
