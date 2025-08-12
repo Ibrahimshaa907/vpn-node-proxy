@@ -30,7 +30,7 @@
         if (newWindow) {
           setTimeout(() => {
             newWindow.close();
-          }, 40000); // 40 seconds baad close
+          }, 20000); // 20 seconds baad close
         } else {
           alert("New tab nahi khul saka. Popup blocker disable karo.");
         }
@@ -42,8 +42,8 @@
         if (current < frequency) {
           openAndCloseTab();
           current++;
-          // Wait 41 seconds before opening the next tab (to ensure previous tab closes)
-          setTimeout(openNextTab, 41000);
+          // Wait 21 seconds before opening the next tab (to ensure previous tab closes)
+          setTimeout(openNextTab, 21000);
         }
       }
 
