@@ -7,26 +7,48 @@
 </head>
 <body>
   <h2>Enter Website URL</h2>
-  <input type="text" id="urlInput" placeholder="e.g., https://httpbin.org/ip" style="width: 300px;" />
+  <input type="text" id="urlInput" placeholder="e.g., https://httpbin.org/ip" style="width: 300px;" /><br><br>
+  <h2>Enter Frequency (Number of Times)</h2>
+  <input type="number" id="frequencyInput" placeholder="e.g., 10" min="1" style="width: 300px;" /><br><br>
   <button onclick="go()">Browse with new IP</button>
 
   <script>
     function go() {
       const url = document.getElementById("urlInput").value.trim();
+      const frequency = parseInt(document.getElementById("frequencyInput").value);
+
+      // Validation
       if (!url) return alert("Please enter a URL");
+      if (!frequency || frequency < 1) return alert("Please enter a valid frequency (1 or more)");
 
       const encoded = encodeURIComponent(url);
       const goUrl = `/go?url=${encoded}`;
-      const newWindow = window.open(goUrl, "_blank"); // New tab open karo
-      
-      // 40 seconds baad window close karo
-      if (newWindow) {
-        setTimeout(() => {
-          newWindow.close();
-        }, 40000); // 40 seconds
-      } else {
-        alert("New tab nahi khul saka. Popup blocker disable karo.");
+
+      // Function to open and close a tab
+      function openAndCloseTab() {
+        const newWindow = window.open(goUrl, "_blank");
+        if (newWindow) {
+          setTimeout(() => {
+            newWindow.close();
+          }, 40000); // 40 seconds baad close
+        } else {
+          alert("New tab nahi khul saka. Popup blocker disable karo.");
+        }
       }
+
+      // Loop to repeat the process for the given frequency
+      let current = 0;
+      function openNextTab() {
+        if (current < frequency) {
+          openAndCloseTab();
+          current++;
+          // Wait 41 seconds before opening the next tab (to ensure previous tab closes)
+          setTimeout(openNextTab, 41000);
+        }
+      }
+
+      // Start the process
+      openNextTab();
     }
   </script>
 </body>
